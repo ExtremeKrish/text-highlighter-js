@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Geist:wght@100..900&display=swap" rel="stylesheet">
+    <title>Text Highlighter</title>
+    <style>
+        body {
+            font-family: "Crimson Pro", serif;
+            color: #1B1B1B;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 1rem;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            background-color: transparent;
+            position: relative;
+        }
+
+        .highlight-toolbar {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: #333;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: opacity 0.1s ease-out, transform 0.1s ease-out, visibility 0.1s ease-out;
+            z-index: 1000;
+            cursor: move;
+            user-select: none;
+        }
+
+        .highlight-toolbar.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            display: flex;
+        }
+
+        .highlight-toolbar button {
+            background-color: #555;
+            color: #fff;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            border: 0;
+        }
+
+        .highlight-toolbar button:hover {
+            background-color: #777;
+            transform: translateY(-1px);
+        }
+
+        .highlight-toolbar button:active {
+            transform: translateY(0);
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 0.35rem;
+            margin-left: 0rem;
+        }
+
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.1s ease-in-out, border-color 0.1s ease-in-out;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+            border-color: #fff;
+        }
+
+        .highlighted {
+            padding: 2px 0;
+            border-radius: 0.3rem;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+        }
+
+        .underlined {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-thickness: 2px;
+        }
+
+        .highlighted.active,
+        .underlined.active {
+            box-shadow: 0 0 0 2px #60a5fa;
+            z-index: 1;
+            position: relative;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p id="content-paragraph">
+            The moon, a celestial body that has captivated humanity for millennia, silently orbits our Earth, influencing tides and inspiring countless myths and legends. Its surface, a tapestry of craters, mountains, and vast plains known as maria, bears witness to billions of years of cosmic bombardment and volcanic activity. From ancient civilizations who tracked its phases for agricultural and religious purposes, to modern astronauts who have left their footprints on its dusty regolith, the moon remains a beacon of exploration and wonder. Its ethereal glow illuminates our nights, a constant reminder of the vast universe beyond our terrestrial home. The scientific study of the moon, known as selenography, continues to reveal new insights into its formation, evolution, and potential resources, paving the way for future lunar missions and even human colonization.
+            <br><br>
+            Beyond its scientific significance, the moon holds a profound cultural and emotional resonance. Poets have penned odes to its beauty, lovers have gazed upon it in quiet contemplation, and artists have depicted its mystique in countless masterpieces. It symbolizes change and constancy, darkness and light, a silent observer of human history. As we look up at the night sky, the moon serves as a bridge between our earthly existence and the boundless cosmos, inviting us to dream, to explore, and to understand our place in the grand scheme of the universe. Its rhythmic dance with the Earth continues, a timeless ballet that guides our planet and inspires our souls.
+        </p>
+
+        <div id="highlight-toolbar" class="highlight-toolbar">
+            <button id="apply-highlight-btn" class="visible">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20"><path fill="currentColor" d="M4.5 2A1.5 1.5 0 0 0 3 3.5v3A1.5 1.5 0 0 0 4.5 8h11A1.5 1.5 0 0 0 17 6.5v-3A1.5 1.5 0 0 0 15.5 2zM6 11a2 2 0 0 1-2-2h12a2 2 0 0 1-2 2zm0 1h8v1.074a2 2 0 0 1-1.106 1.789l-6.17 3.085A.5.5 0 0 1 6 17.501z"/></svg>
+                
+            </button>
+            <button id="apply-underline-btn" class="visible">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><g fill="none"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M18 18.5a1.5 1.5 0 0 1 .144 2.993L18 21.5H6a1.5 1.5 0 0 1-.144-2.993L6 18.5zm-1-16a1.5 1.5 0 0 1 1.493 1.356L18.5 4v7a6.5 6.5 0 0 1-12.996.233L5.5 11V4a1.5 1.5 0 0 1 2.993-.144L8.5 4v7a3.5 3.5 0 0 0 6.995.192L15.5 11V4A1.5 1.5 0 0 1 17 2.5"/></g></svg>
+                
+            </button>
+            <button id="delete-style-btn" class="hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M2.75 6.167c0-.46.345-.834.771-.834h2.665c.529-.015.996-.378 1.176-.916l.03-.095l.115-.372c.07-.228.131-.427.217-.605c.338-.702.964-1.189 1.687-1.314c.184-.031.377-.031.6-.031h3.478c.223 0 .417 0 .6.031c.723.125 1.35.612 1.687 1.314c.086.178.147.377.217.605l.115.372l.03.095c.18.538.74.902 1.27.916h2.57c.427 0 .772.373.772.834S20.405 7 19.979 7H3.52c-.426 0-.771-.373-.771-.833M11.607 22h.787c2.707 0 4.06 0 4.941-.863c.88-.864.97-2.28 1.15-5.111l.26-4.081c.098-1.537.147-2.305-.295-2.792s-1.187-.487-2.679-.487H8.23c-1.491 0-2.237 0-2.679.487s-.392 1.255-.295 2.792l.26 4.08c.18 2.833.27 4.248 1.15 5.112S8.9 22 11.607 22"/></svg>
+                
+            </button>
+            <div class="color-palette" id="color-palette"></div>
+        </div>
+    </div>
+
+    <script>
+        const contentParagraph = document.getElementById('content-paragraph');
+        const highlightToolbar = document.getElementById('highlight-toolbar');
+        const applyHighlightBtn = document.getElementById('apply-highlight-btn');
+        const applyUnderlineBtn = document.getElementById('apply-underline-btn');
+        const deleteStyleBtn = document.getElementById('delete-style-btn');
+        const colorPalette = document.getElementById('color-palette');
+
+        const colors = ['#fde047', '#a7f3d0', '#bfdbfe', '#fecaca', '#dbeafe', '#fbcfe8'];
+        let selectedColor = colors[0];
+        let currentActiveStyledElement = null;
+        const highlightsMap = new Map();
+
+        const preHighlights = [
+            { text: "celestial body", color: "#fde047", styleType: "highlight", id: "highlight1" },
+            { text: "myths and legends", color: "#ff0000", styleType: "underline", id: "highlight2" }
+        ];
+
+        function populateColorPalette() {
+            colors.forEach(color => {
+                const colorOption = document.createElement('div');
+                colorOption.classList.add('color-option');
+                colorOption.style.backgroundColor = color;
+                colorOption.dataset.color = color;
+                colorOption.addEventListener('click', () => {
+                    selectedColor = color;
+                    document.querySelectorAll('.color-option').forEach(opt => opt.style.borderColor = 'transparent');
+                    colorOption.style.borderColor = '#fff';
+                    if (currentActiveStyledElement) {
+                        const type = currentActiveStyledElement.dataset.styleType;
+                        if (type === 'highlight') {
+                            currentActiveStyledElement.style.backgroundColor = selectedColor;
+                        } else if (type === 'underline') {
+                            currentActiveStyledElement.style.textDecorationColor = selectedColor;
+                        }
+                        currentActiveStyledElement.dataset.color = selectedColor;
+                        highlightsMap.set(currentActiveStyledElement.dataset.id, {
+                            text: currentActiveStyledElement.textContent,
+                            color: selectedColor,
+                            styleType: type,
+                            startOffset: getNodeOffset(currentActiveStyledElement),
+                            endOffset: getNodeOffset(currentActiveStyledElement) + currentActiveStyledElement.textContent.length
+                        });
+                    }
+                });
+                colorPalette.appendChild(colorOption);
+            });
+            const initialSelectedOption = document.querySelector(`.color-option[data-color="${selectedColor}"]`);
+            if (initialSelectedOption) initialSelectedOption.style.borderColor = '#fff';
+        }
+
+        function getNodeOffset(node) {
+            let offset = 0;
+            let current = node;
+            while (current.previousSibling) {
+                current = current.previousSibling;
+                if (current.nodeType === Node.TEXT_NODE) {
+                    offset += current.textContent.length;
+                } else if (current.nodeType === Node.ELEMENT_NODE) {
+                    offset += current.textContent.length;
+                }
+            }
+            return offset;
+        }
+
+        function applyPreHighlights() {
+            const text = contentParagraph.textContent;
+            preHighlights.forEach(({ text: highlightText, color, styleType, id }) => {
+                const startIndex = text.indexOf(highlightText);
+                if (startIndex === -1) return;
+
+                const range = document.createRange();
+                let currentOffset = 0;
+                let foundNode = null;
+                let startNodeOffset = 0;
+
+                const walker = document.createTreeWalker(contentParagraph, NodeFilter.SHOW_TEXT, null);
+                while (walker.nextNode()) {
+                    const node = walker.currentNode;
+                    const nodeLength = node.textContent.length;
+                    if (currentOffset + nodeLength > startIndex) {
+                        startNodeOffset = startIndex - currentOffset;
+                        foundNode = node;
+                        break;
+                    }
+                    currentOffset += nodeLength;
+                }
+
+                if (foundNode) {
+                    range.setStart(foundNode, startNodeOffset);
+                    range.setEnd(foundNode, startNodeOffset + highlightText.length);
+
+                    const span = document.createElement('span');
+                    span.style.color = 'inherit';
+                    span.dataset.styleType = styleType;
+                    span.dataset.color = color;
+                    span.dataset.id = id;
+                    if (styleType === 'highlight') {
+                        span.classList.add('highlighted');
+                        span.style.backgroundColor = color;
+                    } else if (styleType === 'underline') {
+                        span.classList.add('underlined');
+                        span.style.textDecorationColor = color;
+                    }
+                    range.surroundContents(span);
+
+                    highlightsMap.set(id, {
+                        text: highlightText,
+                        color,
+                        styleType,
+                        startOffset: startIndex,
+                        endOffset: startIndex + highlightText.length
+                    });
+                }
+            });
+        }
+
+        function getSelectionRange() {
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                if (contentParagraph.contains(range.commonAncestorContainer)) {
+                    return range;
+                }
+            }
+            return null;
+        }
+
+        function showToolbar(target, isEditMode = false, x = null, y = null) {
+    const range = getSelectionRange();
+    let rect;
+
+    if (isEditMode && target) {
+        rect = target.getBoundingClientRect();
+    } else if (range) {
+        rect = range.getBoundingClientRect();
+        x = x || rect.left + (rect.width / 2);
+        y = y || rect.top;
+    } else {
+        hideToolbar();
+        return;
+    }
+
+    // Temporarily show toolbar offscreen to measure it
+    highlightToolbar.style.left = '-9999px';
+    highlightToolbar.style.top = '-9999px';
+    highlightToolbar.classList.remove('hidden');
+    highlightToolbar.classList.add('visible');
+
+    // Now that it's visible, we can accurately measure
+    const toolbarWidth = highlightToolbar.offsetWidth;
+    const toolbarHeight = highlightToolbar.offsetHeight;
+
+    const containerRect = contentParagraph.getBoundingClientRect();
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const padding = 15;
+
+    // X-axis positioning
+    let toolbarLeft = x - (toolbarWidth / 2);
+    toolbarLeft = Math.max(padding, Math.min(toolbarLeft, windowWidth - toolbarWidth - padding));
+    toolbarLeft -= containerRect.left;
+
+    // Y-axis positioning
+    let toolbarTop = rect.top - containerRect.top - toolbarHeight - padding;
+    if (toolbarTop < padding - containerRect.top) {
+        toolbarTop = rect.bottom - containerRect.top + padding;
+    }
+
+    const absoluteTop = containerRect.top + toolbarTop;
+    if (absoluteTop + toolbarHeight + padding > windowHeight) {
+        toolbarTop = windowHeight - containerRect.top - toolbarHeight - padding;
+    }
+    if (absoluteTop < padding) {
+        toolbarTop = padding - containerRect.top;
+    }
+
+    // Final placement
+    highlightToolbar.style.left = `${toolbarLeft}px`;
+    highlightToolbar.style.top = `${toolbarTop}px`;
+
+    // Button visibility
+    applyHighlightBtn.classList.toggle('hidden', isEditMode);
+    applyHighlightBtn.classList.toggle('visible', !isEditMode);
+    applyUnderlineBtn.classList.toggle('hidden', isEditMode);
+    applyUnderlineBtn.classList.toggle('visible', !isEditMode);
+    deleteStyleBtn.classList.toggle('hidden', !isEditMode);
+    deleteStyleBtn.classList.toggle('visible', isEditMode);
+}
+
+
+        function hideToolbar() {
+            highlightToolbar.classList.remove('visible');
+            highlightToolbar.classList.add('hidden');
+            if (currentActiveStyledElement) {
+                currentActiveStyledElement.classList.remove('active');
+                currentActiveStyledElement = null;
+            }
+        }
+
+        function applyStyle(styleType) {
+            const range = getSelectionRange();
+            if (!range) return;
+            hideToolbar();
+            const selectedText = range.toString();
+            const id = `highlight${Date.now()}`;
+            const span = document.createElement('span');
+            span.style.color = 'inherit';
+            span.dataset.styleType = styleType;
+            span.dataset.color = selectedColor;
+            span.dataset.id = id;
+            if (styleType === 'highlight') {
+                span.classList.add('highlighted');
+                span.style.backgroundColor = selectedColor;
+            } else if (styleType === 'underline') {
+                span.classList.add('underlined');
+                span.style.textDecorationColor = selectedColor;
+            }
+            try {
+                range.surroundContents(span);
+            } catch (e) {
+                console.error("Could not surround contents:", e);
+                if (selectedText) {
+                    const tempSpan = document.createElement('span');
+                    tempSpan.classList.add(styleType === 'highlight' ? 'highlighted' : 'underlined');
+                    if (styleType === 'highlight') tempSpan.style.backgroundColor = selectedColor;
+                    else tempSpan.style.textDecorationColor = selectedColor;
+                    tempSpan.textContent = selectedText;
+                    tempSpan.dataset.styleType = styleType;
+                    tempSpan.dataset.color = selectedColor;
+                    tempSpan.dataset.id = id;
+                    range.deleteContents();
+                    range.insertNode(tempSpan);
+                }
+            }
+            highlightsMap.set(id, {
+                text: selectedText,
+                color: selectedColor,
+                styleType,
+                startOffset: getNodeOffset(span),
+                endOffset: getNodeOffset(span) + selectedText.length
+            });
+            window.getSelection().removeAllRanges();
+            hideToolbar();
+        }
+
+        function deleteStyle() {
+            if (!currentActiveStyledElement) return;
+            const id = currentActiveStyledElement.dataset.id;
+            const parent = currentActiveStyledElement.parentNode;
+            while (currentActiveStyledElement.firstChild) {
+                parent.insertBefore(currentActiveStyledElement.firstChild, currentActiveStyledElement);
+            }
+            parent.removeChild(currentActiveStyledElement);
+            highlightsMap.delete(id);
+            hideToolbar();
+        }
+
+        function handleSelection(event) {
+            setTimeout(() => {
+                const selection = window.getSelection();
+                const range = getSelectionRange();
+                if (range && !selection.isCollapsed && contentParagraph.contains(range.commonAncestorContainer)) {
+                    if (currentActiveStyledElement) {
+                        currentActiveStyledElement.classList.remove('active');
+                        currentActiveStyledElement = null;
+                    }
+                    let x, y;
+                    if (event.type === 'touchend') {
+                        const touch = event.changedTouches[0];
+                        x = touch.clientX;
+                        y = touch.clientY;
+                    } else {
+                        x = event.clientX;
+                        y = event.clientY;
+                    }
+                    showToolbar(range, false, x, y);
+                } else {
+                    if (!currentActiveStyledElement) hideToolbar();
+                }
+            }, 50);
+        }
+
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        highlightToolbar.addEventListener('mousedown', (e) => {
+            if (e.target.closest('button, .color-option')) return;
+            e.preventDefault();
+            isDragging = true;
+            const rect = highlightToolbar.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const containerRect = contentParagraph.getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const toolbarWidth = highlightToolbar.offsetWidth;
+            const toolbarHeight = highlightToolbar.offsetHeight;
+            const padding = 15;
+
+            let newLeft = e.clientX - dragOffsetX - containerRect.left;
+            let newTop = e.clientY - dragOffsetY - containerRect.top;
+
+            newLeft = Math.max(padding, Math.min(newLeft, windowWidth - toolbarWidth - padding - containerRect.left));
+            newTop = Math.max(padding - containerRect.top, Math.min(newTop, windowHeight - toolbarHeight - padding - containerRect.top));
+
+            highlightToolbar.style.left = `${newLeft}px`;
+            highlightToolbar.style.top = `${newTop}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        highlightToolbar.addEventListener('touchstart', (e) => {
+            if (e.target.closest('button, .color-option')) return;
+            e.preventDefault();
+            isDragging = true;
+            const touch = e.touches[0];
+            const rect = highlightToolbar.getBoundingClientRect();
+            dragOffsetX = touch.clientX - rect.left;
+            dragOffsetY = touch.clientY - rect.top;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            const containerRect = contentParagraph.getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const toolbarWidth = highlightToolbar.offsetWidth;
+            const toolbarHeight = highlightToolbar.offsetHeight;
+            const padding = 15;
+
+            let newLeft = touch.clientX - dragOffsetX - containerRect.left;
+            let newTop = touch.clientY - dragOffsetY - containerRect.top;
+
+            newLeft = Math.max(padding, Math.min(newLeft, windowWidth - toolbarWidth - padding - containerRect.left));
+            newTop = Math.max(padding - containerRect.top, Math.min(newTop, windowHeight - toolbarHeight - padding - containerRect.top));
+
+            highlightToolbar.style.left = `${newLeft}px`;
+            highlightToolbar.style.top = `${newTop}px`;
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        populateColorPalette();
+        applyPreHighlights();
+
+        contentParagraph.addEventListener('mouseup', handleSelection);
+        contentParagraph.addEventListener('touchend', handleSelection);
+        contentParagraph.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            handleSelection(event);
+        });
+
+        contentParagraph.addEventListener('click', (e) => {
+            let target = e.target;
+            while (target && target !== contentParagraph && !target.classList.contains('highlighted') && !target.classList.contains('underlined')) {
+                target = target.parentNode;
+            }
+            if (target && (target.classList.contains('highlighted') || target.classList.contains('underlined'))) {
+                if (currentActiveStyledElement && currentActiveStyledElement !== target) {
+                    currentActiveStyledElement.classList.remove('active');
+                }
+                currentActiveStyledElement = target;
+                currentActiveStyledElement.classList.add('active');
+                window.getSelection().removeAllRanges();
+                showToolbar(currentActiveStyledElement, true);
+            } else {
+                hideToolbar();
+            }
+        });
+
+        highlightToolbar.addEventListener('mousedown', (e) => {
+            if (e.target.closest('button, .color-option')) e.preventDefault();
+        });
+
+        applyHighlightBtn.addEventListener('click', () => applyStyle('highlight'));
+        applyUnderlineBtn.addEventListener('click', () => applyStyle('underline'));
+        deleteStyleBtn.addEventListener('click', deleteStyle);
+
+        window.addEventListener('resize', () => {
+            if (highlightToolbar.classList.contains('visible')) {
+                if (currentActiveStyledElement) {
+                    showToolbar(currentActiveStyledElement, true);
+                } else {
+                    const range = getSelectionRange();
+                    if (range) showToolbar(range, false);
+                    else hideToolbar();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
