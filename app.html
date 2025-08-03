@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<!--    <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Geist:wght@100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="coloris/coloris.min.css" />
+ --><link rel="stylesheet" href="coloris/coloris.min.css" />
 <script src="coloris/coloris.min.js"></script>   
    
     <title>Text Highlighter</title>
     <style>
-        
+        @font-face {
+            font-family: 'Sahitya';
+            src: url('./Sahitya-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
         body {
-             font-family: Crimson Pro;
+             font-family: 'Sahitya', serif;
             background-color: #1B1B1B;
             color: #ffffff;
             display: flex;
@@ -59,12 +64,13 @@
         .container {
             width: 100%;
             background-color: transparent;
-            
+            position: relative;
                         overflow-x: hidden;
                         
         }
-        #content-paragraph{
-            margin: 0;
+        .content-paragraph{
+            font-size:20px;
+            line-height: 1.25; 
         }
         .highlight-toolbar {
             position: absolute;
@@ -135,7 +141,7 @@
         }
 
         .highlighted {
-            padding: 2px 0;
+            padding: 0px 0;
             border-radius: 0.3rem;
             box-decoration-break: clone;
             -webkit-box-decoration-break: clone;
@@ -177,26 +183,7 @@
 <body>
     <div class="container">
         <p id="content-paragraph">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ut rhoncus sapien. Donec quam elit, fringilla ac justo eleifend, malesuada scelerisque nulla. Phasellus euismod, nibh ut consequat pulvinar, diam velit lacinia orci, eu gravida justo dui bibendum mi. Maecenas sollicitudin nisl at erat accumsan hendrerit. Praesent id enim vitae nisi placerat interdum euismod sit amet metus. Pellentesque finibus dapibus orci, ac sollicitudin enim molestie vel. Sed sit amet tempus odio. Aliquam semper neque sed consequat interdum. Vestibulum eget pellentesque neque, vitae laoreet ipsum.
-        <br/><br />
-        Donec congue nunc in mauris sagittis, vel varius risus porttitor. Curabitur ullamcorper lectus sed porta rhoncus. Nulla facilisi. Sed finibus, quam eget laoreet varius, lectus nunc malesuada massa, fringilla ullamcorper mi dui eget neque. Phasellus felis metus, consequat non quam nec, viverra porttitor risus. Nam in nisl eu ante ornare rutrum. Mauris vel eros bibendum, congue elit non, euismod velit. Donec ultricies fringilla mi eget rutrum.
-        <br/><br />
-        Phasellus scelerisque augue nisi, ut molestie elit pellentesque at. Duis ac tempor nisl, eget dictum magna. Nullam lacinia purus eget libero fringilla aliquam. Pellentesque non finibus lorem. Etiam convallis metus ut ligula tempus bibendum. In gravida id leo eget tempor. Nulla placerat porta tincidunt.
-        <br/><br />
-        Morbi id imperdiet tortor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam tristique elementum fermentum. Nam tincidunt et erat quis vehicula. Aliquam tempus mi sed risus placerat, vitae condimentum urna consectetur. Aenean dignissim interdum semper. Integer tristique lacus at molestie bibendum. Phasellus non lobortis ante, vel interdum diam. Integer nec elit ac libero viverra molestie. Proin ultricies lectus orci, et tincidunt mi iaculis vel. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Phasellus lacinia dignissim augue, at dictum felis pharetra at. Maecenas scelerisque suscipit lectus nec sagittis. Maecenas vulputate ligula sed fringilla commodo. Sed eu mauris sed massa porttitor blandit.
-        <br/><br />
-        Cras tempus vel leo in ullamcorper. Duis nec est eu nisl vulputate sagittis. Nullam rutrum viverra diam. Suspendisse eget ipsum vitae ante volutpat auctor nec tincidunt tortor. Duis ut eros vitae velit semper pretium. Cras non tincidunt eros. Maecenas orci est, lacinia in leo a, rutrum blandit arcu.
-        <br/><br />
-        Proin ac est erat. Mauris ultrices aliquet neque ut lobortis. Integer consequat porta odio, ut pretium eros mattis vel. Ut ac eleifend quam. Morbi non euismod magna. Sed ornare sollicitudin odio vel pellentesque. Nullam blandit imperdiet eros. Fusce id justo neque. Integer ullamcorper sit amet massa eget congue. Vivamus finibus aliquam ex vitae rhoncus. Fusce ultrices urna sit amet metus placerat, sed vulputate dolor pretium. In placerat dolor a maximus mollis. Integer mattis turpis vitae risus facilisis suscipit. Cras neque urna, interdum vitae arcu placerat, sagittis vulputate metus. Fusce felis urna, rhoncus at pharetra id, fermentum sit amet est. Integer ac auctor neque, a rutrum enim.
-        <br/><br />
-        Aenean sit amet gravida purus. Aliquam erat volutpat. Curabitur eget ligula sed tellus ultricies viverra et vel erat. Aliquam posuere est sed nulla convallis, non blandit quam aliquam. Aliquam pretium est eu diam maximus, nec tempus magna viverra. Sed ornare vehicula est, rutrum varius est tincidunt at. Cras varius massa dui, ac luctus dolor sodales eget. Integer congue posuere enim, vel efficitur augue fermentum et. Quisque a arcu at purus luctus tristique. Vivamus nec velit facilisis, varius velit in, maximus nisi. Donec sed sem nec neque ornare faucibus. Etiam pellentesque diam in nulla ullamcorper, et lobortis nunc varius. Proin et augue at velit gravida molestie at vel odio. Phasellus accumsan, mauris vitae semper finibus, massa est bibendum nisi, sed pellentesque dui nunc ac leo. Aliquam rutrum ante arcu, eu tincidunt leo blandit nec.
-        <br/><br />
-        Phasellus fringilla hendrerit lacus, malesuada aliquet est porta at. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce semper mauris at ante mollis faucibus. Nulla facilisi. Cras ornare ipsum sed tempus venenatis. Etiam tincidunt massa ut iaculis tempor. Phasellus enim nulla, vulputate in lectus et, ultricies vulputate mauris. Vestibulum ultrices, ante vel vestibulum gravida, dolor orci sagittis nisi, a finibus sem erat quis eros. Sed ac porttitor elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus varius elementum arcu, nec placerat arcu aliquam id. Etiam nec ante ex. Sed ac massa a libero porttitor egestas. Curabitur accumsan consectetur scelerisque. Nam gravida lorem eu dui luctus, sed hendrerit augue porta. Curabitur porttitor viverra mi, non placerat felis tincidunt eu.
-        <br/><br />
-        Quisque consectetur, nunc vitae placerat vehicula, diam purus accumsan felis, interdum tincidunt sem risus vitae urna. Proin vitae tellus orci. Praesent lorem arcu, accumsan vel sagittis vel, gravida eget mauris. Praesent eleifend vulputate tortor a faucibus. Etiam malesuada euismod malesuada. Sed pharetra feugiat lacus vitae sollicitudin. In viverra libero quis porta euismod. Vestibulum dictum mattis dolor, vitae accumsan dolor auctor sit amet. Curabitur bibendum justo tortor, sit amet pellentesque eros bibendum in. Duis molestie congue sem, sit amet aliquet sapien finibus eu. Integer a laoreet nunc, et ultricies diam. Maecenas porta laoreet pharetra. Vivamus at tempor diam. In rhoncus vitae urna a gravida. Curabitur feugiat est quis quam porta, nec rutrum urna imperdiet.
-        <br/>
-        Donec blandit, turpis eget bibendum aliquam, diam nisi luctus risus, at lobortis justo lorem at mi. Duis tincidunt hendrerit tortor quis volutpat. Duis sed tellus porta, aliquam dui sed, vulputate lorem. Praesent euismod arcu sit amet maximus sagittis. Sed ut fringilla libero. Nam malesuada tincidunt venenatis. Mauris ipsum ligula, tempor at hendrerit nec, varius at sem. Cras a dolor pharetra, vehicula mi fringilla, eleifend orci. Donec malesuada quis libero at varius. Nulla facilisi. Praesent fringilla eget urna nec venenatis. Vivamus et libero vel ligula faucibus condimentum. Donec sodales lacus in justo laoreet, ac tristique velit consequat.
-        </p>
+          </p>
 
         <div id="highlight-toolbar" class="highlight-toolbar">
             <button id="apply-highlight-btn" class="visible">
@@ -220,14 +207,87 @@
         </div>
         
         <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16"><path fill="#fff" fill-rule="evenodd" d="M12 6.5a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3M12 8a3 3 0 1 0-2.905-3.75H1.75a.75.75 0 0 0 0 1.5h7.345A3 3 0 0 0 12 8m-6.5 3a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m1.405.75A3.001 3.001 0 0 1 1 11a3 3 0 0 1 5.905-.75h7.345a.75.75 0 0 1 0 1.5z" clip-rule="evenodd"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#fff" d="M12 19a1 1 0 0 1 .993.883L13 20v1a1 1 0 0 1-1.993.117L11 21v-1a1 1 0 0 1 1-1m6.313-2.09l.094.083l.7.7a1 1 0 0 1-1.32 1.497l-.094-.083l-.7-.7a1 1 0 0 1 1.218-1.567zm-11.306.083a1 1 0 0 1 .083 1.32l-.083.094l-.7.7a1 1 0 0 1-1.497-1.32l.083-.094l.7-.7a1 1 0 0 1 1.414 0M4 11a1 1 0 0 1 .117 1.993L4 13H3a1 1 0 0 1-.117-1.993L3 11zm17 0a1 1 0 0 1 .117 1.993L21 13h-1a1 1 0 0 1-.117-1.993L20 11zM6.213 4.81l.094.083l.7.7a1 1 0 0 1-1.32 1.497l-.094-.083l-.7-.7A1 1 0 0 1 6.11 4.74zm12.894.083a1 1 0 0 1 .083 1.32l-.083.094l-.7.7a1 1 0 0 1-1.497-1.32l.083-.094l.7-.7a1 1 0 0 1 1.414 0M12 2a1 1 0 0 1 .993.883L13 3v1a1 1 0 0 1-1.993.117L11 4V3a1 1 0 0 1 1-1m0 5a5 5 0 1 1-4.995 5.217L7 12l.005-.217A5 5 0 0 1 12 7" />
+            </svg>
         </button>
 
     </div>
+<script>
+    const slug = new URLSearchParams(window.location.search).get("slug");
+const paragraph = document.getElementById("content-paragraph");
 
-    <script>
-    
-    const fileName = "highlights";
+if (!slug) {
+  paragraph.innerHTML = "No slug provided in URL.";
+} else {
+  // Everything else goes inside this else block
+  const dbName = "OshoDiscourseDB";
+  const storeName = "discourses";
+
+  const openRequest = indexedDB.open(dbName, 1);
+
+  openRequest.onupgradeneeded = function (e) {
+    const db = e.target.result;
+    if (!db.objectStoreNames.contains(storeName)) {
+      db.createObjectStore(storeName, { keyPath: "slug" });
+    }
+  };
+
+  openRequest.onsuccess = function (e) {
+    const db = e.target.result;
+
+    const tx = db.transaction(storeName, "readonly");
+    const store = tx.objectStore(storeName);
+
+    const getRequest = store.get(slug);
+
+    getRequest.onsuccess = function () {
+      const result = getRequest.result;
+
+      if (result) {
+        paragraph.innerHTML = result.description || "No description found (cached).";
+      } else {
+        fetchAndStoreSlug(db, slug);
+      }
+    };
+
+    getRequest.onerror = function () {
+      paragraph.innerHTML = "Error reading from offline storage.";
+    };
+  };
+
+  openRequest.onerror = function () {
+    paragraph.innerHTML = "Failed to open local database.";
+  };
+
+  function fetchAndStoreSlug(db, slug) {
+    const apiUrl = `https://extremekrish.github.io/osho/discourse/${slug}.json`;
+
+    fetch(apiUrl)
+      .then((res) => {
+        if (!res.ok) throw new Error("Network error");
+        return res.json();
+      })
+      .then((data) => {
+        const description = data.description;
+
+        const tx = db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        store.put({ slug: slug, description: description });
+
+        paragraph.innerHTML = description || "No description found (fresh).";
+      })
+      .catch((err) => {
+        paragraph.innerHTML = "Error fetching content: " + err.message;
+      });
+  }
+}
+
+
+
+// MAIN FILE STARTS HERE
+
+    const fileName = slug;
     
     const toggleBtn = document.getElementById('themeToggleBtn');
     toggleBtn.addEventListener('click', () => {
